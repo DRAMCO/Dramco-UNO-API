@@ -163,7 +163,14 @@ function handleGetRequest(){
                         echo("<h5 class=\"ids\"><span class=\"app_id\">$app_id</span> / <span class=\"dev_id\">$dev_id</span></h5><p class=\"time\">$time</p>");
                         echo("<table class=\"sensors\">");
                         foreach ($message as $key => $value) {
-                            if($key == "accelerometer_x" || $key == "accelerometer_y" || $key == "accelerometer_z" || $key == "luminosity" || $key == "temperature" || $key == "soil_moisture"){
+                            if(isset($_GET["key"])  && $_GET["key"] != "" && $keyNames[$_GET["key"]] != "" ){
+                                $keyRequested = $keyNames[$_GET["key"]];
+                                if($key == $keyRequested || ($keyRequested == "accelerometer" && $key == "accelerometer_x") || ($keyRequested == "accelerometer" && $key == "accelerometer_y") || ($keyRequested == "accelerometer" && $key == "accelerometer_z")){
+                                    $name = $sensorNames[$key];
+                                    $unit = $sensorUnits[$key]; 
+                                    echo("<tr class=\"sensor\"><td class=\"sensor_name\">$name</td> <td class=\"sensor_value\">$value&hairsp;<span class=\"sensor_unit\">$unit</span></td></tr>");
+                                }
+                            }else if($key == "accelerometer_x" || $key == "accelerometer_y" || $key == "accelerometer_z" || $key == "luminosity" || $key == "temperature" || $key == "soil_moisture"){
                                 $name = $sensorNames[$key];
                                 $unit = $sensorUnits[$key]; 
                                 echo("<tr class=\"sensor\"><td class=\"sensor_name\">$name</td> <td class=\"sensor_value\">$value&hairsp;<span class=\"sensor_unit\">$unit</span></td></tr>");
@@ -180,7 +187,13 @@ function handleGetRequest(){
                         $tableStyleClasses = "table-dark";
                         $bodyStyle = "background: #212529;";
                     }
-                    echo("<html><header><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css\" integrity=\"sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2\" crossorigin=\"anonymous\"></header><body style=\"$bodyStyle\">");
+                    $refresh = "";
+                    if(isset($_GET["refresh"]) && intval($_GET["refresh"]) > 0){
+                        $r = intval($_GET["refresh"]);
+                        $refresh = "<meta http-equiv=\"refresh\" content=\"$r\">";
+                    }
+
+                    echo("<html><header><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">$refresh<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css\" integrity=\"sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2\" crossorigin=\"anonymous\"></header><body style=\"$bodyStyle\">");
 
                     foreach($messages as $message) {
                         $time = date("d-m-Y G:i", $message["timestamp"]/1000); 
@@ -228,7 +241,6 @@ function handleGetRequest(){
                     $legend = NULL;
                 }
             }   
-            array_push($graphData, array("21-10-2020 14:00", NULL, 2));
             include("graph.php");
         }
 
