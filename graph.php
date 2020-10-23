@@ -83,7 +83,12 @@ $graph->values($graphData);
 $output = $graph->fetch($type, $header, $defer_js =true);
 // Fix wrong x axis label when negative y values
 $pos = strpos($output,'">Time of day</text>');
-$output = substr_replace($output, '359.35', $pos-6, 6);
+if($output[$pos-7] == '"')
+  $output = substr_replace($output, '359.35', $pos-6, 6);
+else if($output[$pos-6] == '"')
+  $output = substr_replace($output, '359.35', $pos-5, 5);
+else if($output[$pos-8] == '"')
+  $output = substr_replace($output, '359.35', $pos-7, 7);
 
 $mime_header = 'Content-type: image/svg+xml; charset=UTF-8';
 header($mime_header);
