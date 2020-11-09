@@ -241,6 +241,13 @@ function handleGetRequest(){
                     $legend = NULL;
                 }
             }   
+			
+			if(isset($_GET["max"])){
+				$max = $_GET["max"];
+			}
+			if(isset($_GET["min"])){
+				$min = $_GET["min"];
+			}
             include("graph.php");
         }
 
