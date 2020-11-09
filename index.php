@@ -235,8 +235,8 @@ function handleGetRequest(){
                     $legend = [$sensorNames["accelerometer_x"], $sensorNames["accelerometer_y"], $sensorNames["accelerometer_z"]];
                 }else{
                     array_push($graphData, array($time, $message[$requestedKey], NULL));
-                    $max = max($max, $message[$requestedKey]);
-                    $min = min($min, $message[$requestedKey]);
+                    $max = max($max, $message[$requestedKey]+1);
+                    $min = min($min, $message[$requestedKey]-1);
                     $format = 1;
                     $legend = NULL;
                 }
